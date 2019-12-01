@@ -8,6 +8,10 @@ public class MyStringUtils {
             builder.append(i);
         return builder.toString();
     }
-    
+
+    static String replaceVowels(String text){
+        String pattern = "[aeiouyAEIOUY]";
+        return text.replaceAll(pattern, "_");
+    }
 
 }
