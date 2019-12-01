@@ -14,4 +14,8 @@ public class MyStringUtils {
         return text.replaceAll(pattern, "_");
     }
 
+    static String[] split(String text, String regex){
+        return text.split(regex);
+    }
+
 }
