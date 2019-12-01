@@ -15,7 +15,11 @@ public class MyStringUtils {
     }
 
     static String[] split(String text, String regex){
-        return text.split(regex);
+        return text.toLowerCase().split(regex);
+    }
+
+    static boolean check(String text){
+        return text.matches("[A-Z].*\\.");
     }
 
 }
