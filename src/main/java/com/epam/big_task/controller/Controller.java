@@ -8,17 +8,17 @@ import java.util.Map;
 
 public interface Controller {
 
-    List<Sentence> getSortedSentenceList(List<Sentence> sentences);
+    List<Sentence> getSortedSentenceList();
 
-    List<Word> getUniqueWords(Sentence sentence, List<Sentence> otherSentences);
+    List<Word> getUniqueWords();
 
-    Map<Sentence, Integer> getSortedByRepeating(List<Sentence> sentences);
+    Map<Sentence, Integer> getSortedByRepeating();
 
-    Map<Sentence, List<Word>> getWordsOfQuestion(List<Sentence> sentences, int length);
+    Map<Sentence, List<Word>> getWordsOfQuestion(int length);
 
-    void replaceLongestVowel(List<Sentence> sentences);
+    void replaceLongestVowel();
 
-    void printWordsByAlphabet(List<Sentence> sentences);
+    void printWordsByAlphabet();
 
-    void deleteWordsStartConsonant(List<Sentence> sentences, int length);
+    void deleteWordsStartConsonant(int length);
 }
