@@ -7,7 +7,7 @@ public class Sentence {
 
     private String value;
     private List<Word> words;
-    private List<PunctMark> punctMarks;
+    private List<Mark> marks;
 
     public Sentence(String value) {
         this.value = value;
@@ -29,12 +29,12 @@ public class Sentence {
         this.words = words;
     }
 
-    public List<PunctMark> getPunctMarks() {
-        return punctMarks;
+    public List<Mark> getMarks() {
+        return marks;
     }
 
-    public void setPunctMarks(List<PunctMark> punctMarks) {
-        this.punctMarks = punctMarks;
+    public void setMarks(List<Mark> marks) {
+        this.marks = marks;
     }
 
     @Override
@@ -44,12 +44,12 @@ public class Sentence {
         Sentence sentence = (Sentence) o;
         return Objects.equals(value, sentence.value) &&
                 Objects.equals(words, sentence.words) &&
-                Objects.equals(punctMarks, sentence.punctMarks);
+                Objects.equals(marks, sentence.marks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, words, punctMarks);
+        return Objects.hash(value, words, marks);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Sentence {
         return "Sentence{" +
                 "value='" + value + '\'' +
                 ", words=" + words +
-                ", punctMarks=" + punctMarks +
+                ", marks=" + marks +
                 '}';
     }
 }
