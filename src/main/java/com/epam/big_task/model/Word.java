@@ -2,7 +2,7 @@ package com.epam.big_task.model;
 
 import java.util.Objects;
 
-public class Word {
+public class Word implements Comparable<Word> {
 
     private String value;
 
@@ -38,4 +38,8 @@ public class Word {
     }
 
 
+    @Override
+    public int compareTo(Word o) {
+        return this.getValue().compareTo(o.getValue());
+    }
 }
