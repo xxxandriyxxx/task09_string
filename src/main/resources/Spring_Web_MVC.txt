@@ -1,0 +1,227 @@
+1. Spring              Web MVC uniqueWordAAA uniqueBBB  aBcD
+
+replace asd kjsd kjsklj replace222
+
+Spring Web MVC is the original web framework built on the Servlet API and has been included in the Spring Framework from the very beginning. The formal name, “Spring Web MVC,” comes from the name of its source module (spring-webmvc), but it is more commonly known as “Spring MVC”.
+
+Parallel to Spring Web MVC, Spring Framework 5.0 introduced a reactive-stack web framework whose name, “Spring WebFlux,” is also based on its source module (spring-webflux). This section covers Spring Web MVC. The next section covers Spring WebFlux.
+
+1.1. DispatcherServlet
+
+replase  hndcnm aaa uuu replace111 iond sakk
+
+delete adelete adelet e bdelet e dfghjk 123456
+
+Example sentence(repeated 70 times) : q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q q 
+
+Same as in Spring WebFlux?
+
+Spring MVC, as many other web frameworks, is designed around the front controller pattern where a central Servlet, the DispatcherServlet, provides a shared algorithm for request processing, while actual work is performed by configurable delegate components. This model is flexible and supports diverse workflows.
+
+The DispatcherServlet, as any Servlet, needs to be declared and mapped according to the Servlet specification by using Java configuration or in web.xml. In turn, the DispatcherServlet uses Spring configuration to discover the delegate components it needs for request mapping, view resolution, exception handling, and more.
+
+1.1.1. Context Hierarchy
+
+DispatcherServlet expects a WebApplicationContext (an extension of a plain ApplicationContext) for its own configuration. WebApplicationContext has a link to the ServletContext and the Servlet with which it is associated. It is also bound to the ServletContext such that applications can use static methods on RequestContextUtils to look up the WebApplicationContext if they need access to it.
+
+For many applications, having a single WebApplicationContext is simple and suffices. It is also possible to have a context hierarchy where one root WebApplicationContext is shared across multiple DispatcherServlet (or other Servlet) instances, each with its own child WebApplicationContext configuration. See Additional Capabilities of the ApplicationContext for more on the context hierarchy feature.
+
+The root WebApplicationContext typically contains infrastructure beans, such as data repositories and business services that need to be shared across multiple Servlet instances. Those beans are effectively inherited and can be overridden (that is, re-declared) in the Servlet-specific child WebApplicationContext, which typically contains beans local to the given Servlet.
+
+1.1.2. Special Bean Types
+
+Same as in Spring WebFlux
+
+The DispatcherServlet delegates to special beans to process requests and render the appropriate responses. By “special beans” we mean Spring-managed Object instances that implement framework contracts. Those usually come with built-in contracts, but you can customize their properties and extend or replace them.
+
+1.1.3. Web MVC Config
+
+Same as in Spring WebFlux?
+
+Applications can declare the infrastructure beans listed in Special Bean Types that are required to process requests. The DispatcherServlet checks the WebApplicationContext for each special bean. If there are no matching bean types, it falls back on the default types listed in DispatcherServlet.properties.
+
+In most cases, the MVC Config is the best starting point. It declares the required beans in either Java or XML and provides a higher-level configuration callback API to customize it.
+
+1.1.4. Servlet Config
+
+In a Servlet 3.0+ environment, you have the option of configuring the Servlet container programmatically as an alternative or in combination with a web.xml file.
+
+WebApplicationInitializer is an interface provided by Spring MVC that ensures your implementation is detected and automatically used to initialize any Servlet 3 container. An abstract base class implementation of WebApplicationInitializer named AbstractDispatcherServletInitializer makes it even easier to register the DispatcherServlet by overriding methods to specify the servlet mapping and the location of the DispatcherServlet configuration.
+
+
+The isAsyncSupported protected method of AbstractDispatcherServletInitializer provides a single place to enable async support on the DispatcherServlet and all filters mapped to it. By default, this flag is set to true.
+
+Finally, if you need to further customize the DispatcherServlet itself, you can override the createDispatcherServlet method.
+
+1.1.5. Processing
+
+Same as in Spring WebFlux
+
+The DispatcherServlet processes requests as follows:?
+
+    The WebApplicationContext is searched for and bound in the request as an attribute that the controller and other elements in the process can use. It is bound by default under the DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE key.
+
+    The locale resolver is bound to the request to let elements in the process resolve the locale to use when processing the request (rendering the view, preparing data, and so on). If you do not need locale resolving, you do not need the locale resolver.
+
+    The theme resolver is bound to the request to let elements such as views determine which theme to use. If you do not use themes, you can ignore it.
+
+    If you specify a multipart file resolver, the request is inspected for multiparts. If multiparts are found, the request is wrapped in a MultipartHttpServletRequest for further processing by other elements in the process. See Multipart Resolver for further information about multipart handling.
+
+    An appropriate handler is searched for. If a handler is found, the execution chain associated with the handler (preprocessors, postprocessors, and controllers) is executed in order to prepare a model or rendering. Alternatively, for annotated controllers, the response can be rendered (within the HandlerAdapter) instead of returning a view.
+
+    If a model is returned, the view is rendered. If no model is returned (maybe due to a preprocessor or postprocessor intercepting the request, perhaps for security reasons), no view is rendered, because the request could already have been fulfilled.
+
+The HandlerExceptionResolver beans declared in the WebApplicationContext are used to resolve exceptions thrown during request processing. Those exception resolvers allow customizing the logic to address exceptions. See Exceptions for more details.
+
+The Spring DispatcherServlet also supports the return of the last-modification-date, as specified by the Servlet API. The process of determining the last modification date for a specific request is straightforward: The DispatcherServlet looks up an appropriate handler mapping and tests whether the handler that is found implements the LastModified interface. If so, the value of the long getLastModified(request) method of the LastModified interface is returned to the client.
+
+1.1.6. Interception
+
+All HandlerMapping implementations support handler interceptors that are useful when you want to apply specific functionality to certain requests — for example, checking for a principal. Interceptors must implement HandlerInterceptor from the org.springframework.web.servlet package with three methods that should provide enough flexibility to do all kinds of pre-processing and post-processing:
+
+    preHandle(..): Before the actual handler is executed
+
+    postHandle(..): After the handler is executed
+
+    afterCompletion(..): After the complete request has finished
+
+The preHandle(..) method returns a boolean value. You can use this method to break or continue the processing of the execution chain. When this method returns true, the handler execution chain continues. When it returns false, the DispatcherServlet assumes the interceptor itself has taken care of requests (and, for example, rendered an appropriate view) and does not continue executing the other interceptors and the actual handler in the execution chain.
+
+See Interceptors in the section on MVC configuration for examples of how to configure interceptors. You can also register them directly by using setters on individual HandlerMapping implementations.
+
+Note that postHandle is less useful with @ResponseBody and ResponseEntity methods for which the response is written and committed within the HandlerAdapter and before postHandle. That means it is too late to make any changes to the response, such as adding an extra header. For such scenarios, you can implement ResponseBodyAdvice and either declare it as an Controller Advice bean or configure it directly on RequestMappingHandlerAdapter.
+1.1.7. Exceptions
+
+Same as in Spring WebFlux
+
+If an exception occurs during request mapping or is thrown from a request handler (such as a @Controller), the DispatcherServlet delegates to a chain of HandlerExceptionResolver beans to resolve the exception and provide alternative handling, which is typically an error response.
+
+Chain of Resolvers
+
+You can form an exception resolver chain by declaring multiple HandlerExceptionResolver beans in your Spring configuration and setting their order properties as needed. The higher the order property, the later the exception resolver is positioned.
+
+The contract of HandlerExceptionResolver specifies that it can return:
+
+    a ModelAndView that points to an error view.
+
+    An empty ModelAndView if the exception was handled within the resolver.
+
+    null if the exception remains unresolved, for subsequent resolvers to try, and, if the exception remains at the end, it is allowed to bubble up to the Servlet container.
+
+The MVC Config automatically declares built-in resolvers for default Spring MVC exceptions, for @ResponseStatus annotated exceptions, and for support of @ExceptionHandler methods. You can customize that list or replace it.
+Container Error Page
+
+If an exception remains unresolved by any HandlerExceptionResolver and is, therefore, left to propagate or if the response status is set to an error status (that is, 4xx, 5xx), Servlet containers can render a default error page in HTML. To customize the default error page of the container, you can declare an error page mapping in web.xml.
+
+1.1.8. View Resolution
+
+Same as in Spring WebFlux
+
+Spring MVC defines the ViewResolver and View interfaces that let you render models in a browser without tying you to a specific view technology. ViewResolver provides a mapping between view names and actual views. View addresses the preparation of data before handing over to a specific view technology.
+
+Handling
+
+Same as in Spring WebFlux
+
+You can chain view resolvers by declaring more than one resolver bean and, if necessary, by setting the order property to specify ordering. Remember, the higher the order property, the later the view resolver is positioned in the chain.
+
+The contract of a ViewResolver specifies that it can return null to indicate that the view could not be found. However, in the case of JSPs and InternalResourceViewResolver, the only way to figure out if a JSP exists is to perform a dispatch through RequestDispatcher. Therefore, you must always configure an InternalResourceViewResolver to be last in the overall order of view resolvers.
+
+Configuring view resolution is as simple as adding ViewResolver beans to your Spring configuration. The MVC Config provides a dedicated configuration API for View Resolvers and for adding logic-less View Controllers which are useful for HTML template rendering without controller logic.
+Redirecting
+
+Same as in Spring WebFlux
+
+The special redirect: prefix in a view name lets you perform a redirect. The UrlBasedViewResolver (and its subclasses) recognize this as an instruction that a redirect is needed. The rest of the view name is the redirect URL.
+
+The net effect is the same as if the controller had returned a RedirectView, but now the controller itself can operate in terms of logical view names. A logical view name (such as redirect:/myapp/some/resource) redirects relative to the current Servlet context, while a name such as redirect:https://myhost.com/some/arbitrary/path redirects to an absolute URL.
+
+Note that, if a controller method is annotated with the @ResponseStatus, the annotation value takes precedence over the response status set by RedirectView.?
+Forwarding
+
+You can also use a special forward: prefix for view names that are ultimately resolved by UrlBasedViewResolver and subclasses. This creates an InternalResourceView, which does a RequestDispatcher.forward(). Therefore, this prefix is not useful with InternalResourceViewResolver and InternalResourceView (for JSPs), but it can be helpful if you use another view technology but still want to force a forward of a resource to be handled by the Servlet/JSP engine. Note that you may also chain multiple view resolvers, instead.
+Content Negotiation
+
+Same as in Spring WebFlux
+
+ContentNegotiatingViewResolver does not resolve views itself but rather delegates to other view resolvers and selects the view that resembles the representation requested by the client. The representation can be determined from the Accept header or from a query parameter (for example, "/path?format=pdf").
+
+The ContentNegotiatingViewResolver selects an appropriate View to handle the request by comparing the request media types with the media type (also known as Content-Type) supported by the View associated with each of its ViewResolvers. The first View in the list that has a compatible Content-Type returns the representation to the client. If a compatible view cannot be supplied by the ViewResolver chain, the list of views specified through the DefaultViews property is consulted. This latter option is appropriate for singleton Views that can render an appropriate representation of the current resource regardless of the logical view name. The Accept header can include wildcards (for example text/*), in which case a View whose Content-Type is text/xml is a compatible match.
+
+See View Resolvers under MVC Config for configuration details.
+1.1.9. Locale
+
+Most parts of Spring’s architecture support internationalization, as the Spring web MVC framework does. DispatcherServlet lets you automatically resolve messages by using the client’s locale. This is done with LocaleResolver objects.
+
+When a request comes in, the DispatcherServlet looks for a locale resolver and, if it finds one, it tries to use it to set the locale. By using the RequestContext.getLocale() method, you can always retrieve the locale that was resolved by the locale resolver.
+
+In addition to automatic locale resolution, you can also attach an interceptor to the handler mapping (see Interception for more information on handler mapping interceptors) to change the locale under specific circumstances (for example, based on a parameter in the request).
+
+Locale resolvers and interceptors are defined in the org.springframework.web.servlet.i18n package and are configured in your application context in the normal way. The following selection of locale resolvers is included in Spring.
+
+    Time Zone
+
+    Header Resolver
+
+    Cookie Resolver
+
+    Session Resolver
+
+    Locale Interceptor
+
+Time Zone
+
+In addition to obtaining the client’s locale, it is often useful to know its time zone. The LocaleContextResolver interface offers an extension to LocaleResolver that lets resolvers provide a richer LocaleContext, which may include time zone information.
+
+When available, the user’s TimeZone can be obtained by using the RequestContext.getTimeZone() method. Time zone information is automatically used by any Date/Time Converter and Formatter objects that are registered with Spring’s ConversionService.
+Header Resolver
+
+This locale resolver inspects the accept-language header in the request that was sent by the client (for example, a web browser). Usually, this header field contains the locale of the client’s operating system. Note that this resolver does not support time zone information.
+Cookie Resolver
+
+This locale resolver inspects a Cookie that might exist on the client to see if a Locale or TimeZone is specified. If so, it uses the specified details. By using the properties of this locale resolver, you can specify the name of the cookie as well as the maximum age.
+
+Session Resolver
+
+The SessionLocaleResolver lets you retrieve Locale and TimeZone from the session that might be associated with the user’s request. In contrast to CookieLocaleResolver, this strategy stores locally chosen locale settings in the Servlet container’s HttpSession. As a consequence, those settings are temporary for each session and are, therefore, lost when each session terminates.
+
+Note that there is no direct relationship with external session management mechanisms, such as the Spring Session project. This SessionLocaleResolver evaluates and modifies the corresponding HttpSession attributes against the current HttpServletRequest.
+Locale Interceptor
+
+You can enable changing of locales by adding the LocaleChangeInterceptor to one of the HandlerMapping definitions. It detects a parameter in the request and changes the locale accordingly, calling the setLocale method on the LocaleResolver in the dispatcher’s application context. The next example shows that calls to all *.view resources that contain a parameter named siteLanguage now changes the locale. So, for example, a request for the URL, https://www.sf.net/home.view?siteLanguage=nl, changes the site language to Dutch.
+
+1.1.10. Themes
+
+You can apply Spring Web MVC framework themes to set the overall look-and-feel of your application, thereby enhancing user experience. A theme is a collection of static resources, typically style sheets and images, that affect the visual style of the application.
+Defining a theme
+
+To use themes in your web application, you must set up an implementation of the org.springframework.ui.context.ThemeSource interface. The WebApplicationContext interface extends ThemeSource but delegates its responsibilities to a dedicated implementation. By default, the delegate is an org.springframework.ui.context.support.ResourceBundleThemeSource implementation that loads properties files from the root of the classpath. To use a custom ThemeSource implementation or to configure the base name prefix of the ResourceBundleThemeSource, you can register a bean in the application context with the reserved name, themeSource. The web application context automatically detects a bean with that name and uses it.
+
+
+By default, the ResourceBundleThemeSource uses an empty base name prefix. As a result, the properties files are loaded from the root of the classpath. Thus, you would put the cool.properties theme definition in a directory at the root of the classpath (for example, in /WEB-INF/classes). The ResourceBundleThemeSource uses the standard Java resource bundle loading mechanism, allowing for full internationalization of themes. For example, we could have a /WEB-INF/classes/cool_nl.properties that references a special background image with Dutch text on it.
+Resolving Themes
+
+After you define themes, as described in the preceding section, you decide which theme to use. The DispatcherServlet looks for a bean named themeResolver to find out which ThemeResolver implementation to use. A theme resolver works in much the same way as a LocaleResolver. It detects the theme to use for a particular request and can also alter the request’s theme. 
+
+1.1.11. Multipart Resolver
+
+Same as in Spring WebFlux
+
+MultipartResolver from the org.springframework.web.multipart package is a strategy for parsing multipart requests including file uploads. There is one implementation based on Commons FileUpload and another based on Servlet 3.0 multipart request parsing.
+
+To enable multipart handling, you need to declare a MultipartResolver bean in your DispatcherServlet Spring configuration with a name of multipartResolver. The DispatcherServlet detects it and applies it to the incoming request. When a POST with content-type of multipart/form-data is received, the resolver parses the content and wraps the current HttpServletRequest as MultipartHttpServletRequest to provide access to resolved parts in addition to exposing them as request parameters.
+
+1.1.12. Logging
+
+Same as in Spring WebFlux
+
+DEBUG-level logging in Spring MVC is designed to be compact, minimal, and human-friendly. It focuses on high-value bits of information that are useful over and over again versus others that are useful only when debugging a specific issue.
+
+TRACE-level logging generally follows the same principles as DEBUG (and, for example, also should not be a fire hose) but can be used for debugging any issue. In addition, some log messages may show a different level of detail at TRACE versus DEBUG.
+
+Good logging comes from the experience of using the logs. If you spot anything that does not meet the stated goals, please let us know.
+Sensitive Data
+
+Same as in Spring WebFlux
+
+DEBUG and TRACE logging may log sensitive information. This is why request parameters and headers are masked by default and their logging in full must be enabled explicitly through the enableLoggingRequestDetails property on DispatcherServlet.
