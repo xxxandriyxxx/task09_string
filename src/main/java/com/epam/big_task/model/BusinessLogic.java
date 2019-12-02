@@ -67,7 +67,26 @@ public class BusinessLogic {
                         Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
         return sortedByRepeating;
     }
-    
+
+    public Map<Sentence, List<Word>> getWordsOfQuestion(List<Sentence> sentences, int length) {
+        Map<Sentence, List<Word>> wordMap = new HashMap<>();
+        List<Word> words = new ArrayList<>();
+        for (Sentence s : sentences) {
+            if (s.getValue().matches(".+\\?")) {
+                words.clear();
+                for (Word w : s.getWords()) {
+                    if (w.getValue().length() == length) {
+                        words.add(w);
+                    }
+                }
+                words = words.stream()
+                        .distinct()
+                        .collect(Collectors.toList());
+                wordMap.put(s, words);
+            }
+        }
+        return wordMap;
+    }
 
     public List<Sentence> replaceLongestVowel(List<Sentence> sentences) {
         String longestWord;
@@ -106,6 +125,11 @@ public class BusinessLogic {
         }
         return sentences;
     }
+
+
+
+
+
 }
 
 
