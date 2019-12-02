@@ -72,4 +72,9 @@ public class ControllerImpl implements Controller {
     public void deleteWordsStartConsonant(int length) {
         model.deleteWordsStartConsonant(sentences, length);
     }
+
+    @Override
+    public List<Sentence> getSentences() {
+        return sentences;
+    }
 }

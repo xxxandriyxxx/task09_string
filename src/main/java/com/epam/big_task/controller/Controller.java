@@ -21,4 +21,6 @@ public interface Controller {
     void printWordsByAlphabet();
 
     void deleteWordsStartConsonant(int length);
+
+    List<Sentence> getSentences();
 }
