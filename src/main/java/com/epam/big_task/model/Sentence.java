@@ -19,9 +19,10 @@ public class Sentence implements Comparable<Sentence> {
         return value;
     }
 
-//    public void setValue(String value) {
-//        this.value = value;
-//    }
+    public void setValue(String value) {
+        this.value = value;
+        setWords();
+    }
 
     public List<Word> getWords() {
         return words;
