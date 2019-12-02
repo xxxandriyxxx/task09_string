@@ -1,7 +1,5 @@
 package com.epam.big_task.model;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -146,6 +144,24 @@ public class BusinessLogic {
             System.out.print(w.getValue() + " ");
             lastChar = w.getValue().charAt(0);
         }
+    }
+
+
+    public List<Sentence> deleteWordsStartConsonant(List<Sentence> sentences, int length) {
+
+        for (Sentence s : sentences) {
+            for (Word w : new ArrayList<>(s.getWords())) {
+                if ((w.getValue().length() == length) && (w.getValue().matches("^([^aeiouyAEIOUY]).*"))) {
+                    s.getWords().remove(w);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for (Word w : s.getWords()) {
+                sb.append(" ").append(w.getValue());
+            }
+            s.setValue(sb.toString().trim());
+        }
+        return sentences;
     }
 
 
