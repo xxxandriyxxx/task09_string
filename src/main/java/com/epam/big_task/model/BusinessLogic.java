@@ -3,14 +3,16 @@ package com.epam.big_task.model;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BusinessLogic {
+public class BusinessLogic implements Model {
 
+    @Override
     public List<Sentence> getSortedSentenceList(List<Sentence> sentences) {
         List<Sentence> sortedList = new ArrayList<>(sentences);
         Collections.sort(sortedList);
         return sortedList;
     }
 
+    @Override
     public List<Word> getUniqueWords(Sentence sentence, List<Sentence> otherSentences) {
         List<Word> uniqueWords = new ArrayList<>();
         boolean found = false;
@@ -34,6 +36,7 @@ public class BusinessLogic {
         return uniqueWords;
     }
 
+    @Override
     public Map<Sentence, Integer> getSortedByRepeating(List<Sentence> sentences) {
         List<Map<Word, Long>> numberOfWords = new ArrayList<>();
         for (Sentence s : sentences) {
@@ -66,6 +69,7 @@ public class BusinessLogic {
         return sortedByRepeating;
     }
 
+    @Override
     public Map<Sentence, List<Word>> getWordsOfQuestion(List<Sentence> sentences, int length) {
         Map<Sentence, List<Word>> wordMap = new HashMap<>();
         List<Word> words = new ArrayList<>();
@@ -86,6 +90,7 @@ public class BusinessLogic {
         return wordMap;
     }
 
+    @Override
     public List<Sentence> replaceLongestVowel(List<Sentence> sentences) {
         String longestWord;
         String vowel;
@@ -124,7 +129,7 @@ public class BusinessLogic {
         return sentences;
     }
 
-
+    @Override
     public void printWordsByAlphabet(List<Sentence> sentences) {
         List<Word> allWords = new ArrayList<>();
         char lastChar = 'a';
@@ -146,12 +151,11 @@ public class BusinessLogic {
         }
     }
 
-
+    @Override
     public List<Sentence> deleteWordsStartConsonant(List<Sentence> sentences, int length) {
-
         for (Sentence s : sentences) {
             for (Word w : new ArrayList<>(s.getWords())) {
-                if ((w.getValue().length() == length) && (w.getValue().matches("^([^aeiouyAEIOUY]).*"))) {
+                if ((w.getValue().length() == length) && (w.getValue().matches("^[^aeiouyAEIOUY].*"))) {
                     s.getWords().remove(w);
                 }
             }
@@ -163,7 +167,6 @@ public class BusinessLogic {
         }
         return sentences;
     }
-
 
 }
 
