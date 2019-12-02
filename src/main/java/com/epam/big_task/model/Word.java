@@ -33,8 +33,7 @@ public class Word {
 
     @Override
     public String toString() {
-        return "Word{" +
-                "value='" + value + '\'' +
+        return "Word{'" + value + '\'' +
                 '}';
     }
 

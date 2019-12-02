@@ -33,8 +33,7 @@ public class Mark {
 
     @Override
     public String toString() {
-        return "Mark{" +
-                "value='" + value + '\'' +
+        return "Mark{'" + value + '\'' +
                 '}';
     }
 }

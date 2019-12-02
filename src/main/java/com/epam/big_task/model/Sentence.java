@@ -1,31 +1,38 @@
 package com.epam.big_task.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Sentence {
+public class Sentence implements Comparable<Sentence> {
 
     private String value;
     private List<Word> words;
     private List<Mark> marks;
 
     public Sentence(String value) {
-        this.value = value;
+        this.value = value.replaceAll("\\s+", " ").trim();
+        setWords();
     }
 
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+//    public void setValue(String value) {
+//        this.value = value;
+//    }
 
     public List<Word> getWords() {
         return words;
     }
 
-    public void setWords(List<Word> words) {
+    private void setWords() {
+        List<Word> words = new ArrayList<>();
+        String[] words1 = value.split("\\s");
+        for (String s : words1) {
+            words.add(new Word(s.trim()));
+        }
         this.words = words;
     }
 
@@ -54,10 +61,17 @@ public class Sentence {
 
     @Override
     public String toString() {
-        return "Sentence{" +
-                "value='" + value + '\'' +
-                ", words=" + words +
-                ", marks=" + marks +
+        return "Sentence{'" + value + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Sentence o) {
+        if (this.getWords().size() > o.getWords().size()) {
+            return 1;
+        } else if (this.getWords().size() < o.getWords().size()) {
+            return -1;
+        }
+        return 0;
     }
 }
