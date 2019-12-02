@@ -1,6 +1,7 @@
 package com.epam.big_task.model;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BusinessLogic {
 
@@ -33,7 +34,37 @@ public class BusinessLogic {
         return uniqueWords;
     }
 
-
+    public Map<Sentence,Integer> getSortedByRepeating(List<Sentence> sentences) {
+        List<Map<Word, Long>> numberOfWords = new ArrayList<>();
+        for (Sentence s : sentences) {
+            Map<Word, Long> map = s.getWords().stream()
+                    .collect(Collectors.groupingBy(value -> value, Collectors.counting()));
+            numberOfWords.add(map);
+        }
+        Map<Sentence, Integer> sortedByRepeating = new HashMap<>();
+        int counter = 0;
+        int sentenceCounter = -1;
+        for (Map m : numberOfWords) {
+//            System.out.println("----");
+            counter = 0;
+            sentenceCounter++;
+            Iterator<Map.Entry<Word, Long>> iterator = m.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<Word, Long> entry = iterator.next();
+                if (entry.getValue() > 1) {
+//                    System.out.println("Key: " + entry.getKey() + " Value: " + entry.getValue());
+                    counter += entry.getValue();
+                }
+            }
+            sortedByRepeating.put(sentences.get(sentenceCounter), counter);
+//            System.out.println("couter = " + counter);
+        }
+        sortedByRepeating = sortedByRepeating.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        return sortedByRepeating;
+    }
 
 
 }
