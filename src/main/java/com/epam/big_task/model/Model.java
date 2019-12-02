@@ -13,9 +13,9 @@ public interface Model {
 
     Map<Sentence, List<Word>> getWordsOfQuestion(List<Sentence> sentences, int length);
 
-    List<Sentence> replaceLongestVowel(List<Sentence> sentences);
+    void replaceLongestVowel(List<Sentence> sentences);
 
     void printWordsByAlphabet(List<Sentence> sentences);
 
-    List<Sentence> deleteWordsStartConsonant(List<Sentence> sentences, int length);
+    void deleteWordsStartConsonant(List<Sentence> sentences, int length);
 }

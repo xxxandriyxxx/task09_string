@@ -91,7 +91,7 @@ public class BusinessLogic implements Model {
     }
 
     @Override
-    public List<Sentence> replaceLongestVowel(List<Sentence> sentences) {
+    public void replaceLongestVowel(List<Sentence> sentences) {
         String longestWord;
         String vowel;
         int indexV;
@@ -126,7 +126,6 @@ public class BusinessLogic implements Model {
                 s.setValue(sb.toString().trim());
             }
         }
-        return sentences;
     }
 
     @Override
@@ -152,7 +151,7 @@ public class BusinessLogic implements Model {
     }
 
     @Override
-    public List<Sentence> deleteWordsStartConsonant(List<Sentence> sentences, int length) {
+    public void deleteWordsStartConsonant(List<Sentence> sentences, int length) {
         for (Sentence s : sentences) {
             for (Word w : new ArrayList<>(s.getWords())) {
                 if ((w.getValue().length() == length) && (w.getValue().matches("^[^aeiouyAEIOUY].*"))) {
@@ -165,7 +164,6 @@ public class BusinessLogic implements Model {
             }
             s.setValue(sb.toString().trim());
         }
-        return sentences;
     }
 
 }
