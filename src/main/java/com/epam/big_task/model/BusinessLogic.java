@@ -127,7 +127,26 @@ public class BusinessLogic {
     }
 
 
+    public void printWordsByAlphabet(List<Sentence> sentences) {
+        List<Word> allWords = new ArrayList<>();
+        char lastChar = 'a';
+        for (Sentence s : sentences) {
+            allWords.addAll(s.getWords());
+        }
 
+        allWords = allWords.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        Collections.sort(allWords);
+
+        for (Word w : allWords) {
+            if (w.getValue().charAt(0) != lastChar) {
+                System.out.print("\n");
+            }
+            System.out.print(w.getValue() + " ");
+            lastChar = w.getValue().charAt(0);
+        }
+    }
 
 
 }
