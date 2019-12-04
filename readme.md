@@ -15,7 +15,7 @@ checks a sentence to see that it begins with a capital letter and ends with a pe
 5. Make BigTask with Regular Expression.
 
 
-#### Big Task (in process)
+#### Big Task (done in part)
 Створити програму опрацювання тексту підручника з програмування з
 використанням класів: слово, речення, розділовий знак та ін. У всіх задачах з
 формуванням тексту замінити табуляції і послідовності пробілів одним
